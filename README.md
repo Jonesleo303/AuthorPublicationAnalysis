@@ -1,71 +1,67 @@
-# AuthorPublicationAnalysis
-A tool for visualizing author publication data and their relationships with journals and universities
-import pandas as pd
-import matplotlib.pyplot as plt
+# Author Publication Analysis
 
-def display_author_details_and_charts(df, first_name, last_name, start_year, end_year):
-    author_full_name = first_name + " " + last_name
+## Objectives
+The primary goal of this project is to analyze publication patterns and trends of authors. This includes understanding the frequency, impact, and collaboration networks of authors in a given field or dataset. Key objectives include:
+- Analyzing publication trends and patterns of individual authors.
+- Identifying prolific authors and their impact in the field.
+- Mapping collaboration networks among authors.
 
-    # Check if the author exists in the dataset
-    author_columns = [f'Author{i}FullName' for i in range(1, 11)]
-    author_exists = (df[author_columns] == author_full_name).any().any()
+## Summary
+Understanding author publication trends can provide valuable insights into the evolution of research fields, identify key contributors, and highlight collaboration networks. This project leverages data analysis techniques to achieve the following:
+- **Publication Frequency Analysis**: Examining the number of publications over time for each author.
+- **Impact Analysis**: Assessing the impact of authors based on citations and other metrics.
+- **Collaboration Network Analysis**: Mapping and visualizing the co-authorship networks to understand collaborative relationships.
 
-    if author_exists:
-        # Filter the dataset for the specified author and year range
-        author_mask = df[author_columns].apply(lambda x: author_full_name in x.values, axis=1)
-        df_author = df[author_mask]
-        df_author = df_author[(df_author['Year'] >= start_year) & (df_author['Year'] <= end_year)]
-        
-        if not df_author.empty:
-            # Extract relevant details
-            details = df_author[['Year', 'Title', 'Journal'] + [f'University{i}' for i in range(1, 11)]]
+## Technical Skills
+- **Python**: Used for data analysis, visualization, and building analytical models.
+- **R**: Utilized for statistical analysis and advanced data manipulation.
+- **Excel**: Used for initial data exploration and manipulation.
 
-            # Melt the DataFrame to get a long format for universities
-            details_melted = details.melt(id_vars=['Year', 'Title', 'Journal'], value_vars=[f'University{i}' for i in range(1, 11)], var_name='UniversityIndex', value_name='University')
-            details_melted = details_melted.dropna(subset=['University'])
-            
-            # Drop the UniversityIndex column as it's not needed in the final display
-            details_melted = details_melted.drop(columns=['UniversityIndex'])
-            
-            # Display the table
-            details_melted_sorted = details_melted.sort_values(by=['Year', 'Title', 'Journal', 'University'])
-            print(details_melted_sorted.to_string(index=False))
+## Methodology
+1. **Data Collection**: Gathered publication data, including authors, titles, publication years, and citation counts from relevant sources.
+2. **Data Preprocessing**: Cleaning and preparing the data for analysis, including handling missing values, standardizing author names, and formatting publication records.
+3. **Exploratory Data Analysis (EDA)**: Visualizing and understanding the distribution of data, publication trends, and author productivity.
+4. **Impact Analysis**: Calculating citation metrics and other impact indicators to evaluate author influence.
+5. **Collaboration Network Analysis**: Constructing and visualizing co-authorship networks using network analysis techniques.
 
-            # Plot bar chart for university distribution
-            university_counts = details_melted['University'].value_counts()
-            plt.figure(figsize=(12, 6))
-            university_counts.plot(kind='bar', title=f'Top Universities where {author_full_name} Published ({start_year}-{end_year})')
-            plt.xlabel('University')
-            plt.ylabel('Number of Papers')
-            plt.xticks(rotation=45)
-            plt.show()
+## Results
+- Identified trends in publication frequency and highlighted prolific authors.
+- Assessed the impact of authors based on citation metrics, identifying influential contributors.
+- Mapped collaboration networks, revealing key nodes and connections in the research community.
 
-            # Plot pie chart for journal distribution
-            journal_counts = details_melted['Journal'].value_counts()
-            plt.figure(figsize=(12, 6))
-            journal_counts.plot(kind='pie', autopct="%.1f%%", title=f'Journal Frequency of {author_full_name} ({start_year}-{end_year})')
-            plt.ylabel('')
-            plt.show()
+## Project Structure
+- `data/`: Contains the dataset used for analysis.
+- `scripts/`: Includes the Python and R scripts used for data preprocessing, EDA, and analysis.
+- `results/`: Stores the results of the analysis, including visualizations and summary reports.
+- `README.md`: Provides an overview and detailed description of the project.
+- `requirements.txt`: Lists the dependencies required to run the project (if applicable).
 
-            return details_melted_sorted
-        else:
-            print(f"No publications found for {author_full_name} in the given year range.")
-            return pd.DataFrame()
-    else:
-        print(f"The author {author_full_name} does not exist in the dataset.")
-        return pd.DataFrame()
+## Usage
+To replicate the analysis and results, follow these steps:
 
-# Prompt the user for the year range
-start_year = int(input("Enter the start year (2000 to 2022): "))
-end_year = int(input("Enter the end year (2000 to 2022): "))
+1. **Clone the repository**:
+    ```sh
+    git clone https://github.com/Jonesleo303/AuthorPublicationAnalysis.git
+    ```
 
-# Validate the year inputs
-if start_year < 2000 or start_year > 2022 or end_year < 2000 or end_year > 2022 or start_year > end_year:
-    print("Invalid year range. Please enter years between 2000 and 2022.")
-else:
-    # Prompt the user for the author's first and last name
-    first_name = input("Enter the author's first name: ")
-    last_name = input("Enter the author's last name: ")
+2. **Navigate to the project directory**:
+    ```sh
+    cd AuthorPublicationAnalysis
+    ```
 
-    # Example usage with user input
-    author_details = display_author_details_and_charts(df_filtered, first_name, last_name, start_year, end_year)
+3. **Install the required dependencies** (if applicable):
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+4. **Run the analysis scripts**:
+    Open and run the Python or R scripts in the `scripts/` directory using your preferred environment (e.g., Jupyter Notebook, RStudio).
+
+## Conclusion
+This project provides a comprehensive analysis of author publication patterns, impact, and collaboration networks. The insights gained from this analysis can help identify key contributors, understand research trends, and foster collaboration within the research community.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Acknowledgments
+We would like to thank the data providers and the open-source community for their valuable resources and support.
